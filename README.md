@@ -1,4 +1,4 @@
-# install Dependencies
+# Install Dependencies
 npm i
 
 # To run the App
