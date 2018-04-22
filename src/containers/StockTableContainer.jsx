@@ -1,8 +1,15 @@
 import React from 'react';
-import FlatButtonContainer from './../containers/FlatButtonContainer';
+import StockOptions from './../components/StockOptions';
 import StockMaterialTable from './../components/StockMaterialTable';
 import MaterialSnackbar from './../components/MaterialSnackbar';
 import MaterialDiv from './../components/MaterialDiv';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow
+} from 'material-ui/Table';
 import {
   connect,
   subscribe,
@@ -13,42 +20,68 @@ class StockTableContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stockData: []
+      stockData: [],
+      value: 0
     };
     this.stockTableData = [];
-    this._updateState = this._updateState.bind(this);
+    this._updateSelectValue = this._updateSelectValue.bind(this);
+    this._timeUp = this._timeUp.bind(this);
+    this._timeDown = this._timeDown.bind(this);
+    this._closeUp = this._closeUp.bind(this);
+    this._closeDown = this._closeDown.bind(this);
   }
 
   componentWillMount() {
     this._connect();
     this._subscribe();
     this._receiveData();
-    // setInterval(this._updateState, 2000);
-    console.log("MOUNT");
   }
 
   componentDidUpdate() {
     const stockData = this.state.stockData;
-    this._processData(stockData);
+    const value = this.state.value
+    this._processData(stockData, value);
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.stockData.length != nextState.stockData;
-  // }
 
   render() {
     const stockTableData = this.stockTableData;
+    const value = this.state.value;
+    const styleContainer = {
+      height: '400px',
+      overflowY: 'scroll',
+    };
+
     return (
       <MaterialDiv>
-        {
-          stockTableData ?
-            <StockMaterialTable 
-              stockTableData={stockTableData}
-            />
-          : 
-          null
-        }
-        <FlatButtonContainer />
+        <StockOptions 
+          updateSelectValue={this._updateSelectValue}
+          value={value}
+        />
+        <div style={styleContainer}>
+          <Table >
+            <TableHeader 
+              displaySelectAll={false}>
+              <TableRow>
+                <TableHeaderColumn>Year</TableHeaderColumn>
+                <TableHeaderColumn>Open</TableHeaderColumn>
+                <TableHeaderColumn>High</TableHeaderColumn>
+                <TableHeaderColumn>Low</TableHeaderColumn>
+                <TableHeaderColumn>Close</TableHeaderColumn>
+                <TableHeaderColumn>Volume</TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+            {
+              stockTableData ?
+                <StockMaterialTable 
+                  stockTableData={stockTableData}
+                />
+              : 
+              null
+            }
+            </TableBody>
+          </Table>
+        </div>
         <MaterialSnackbar
           ref="snackbar"
         />
@@ -74,33 +107,80 @@ class StockTableContainer extends React.Component {
       let stockData = this.state.stockData;
       stockData.push(data);
       this.setState({ stockData });
-      // console.log('Data Length : ', this.stockData.length);
       cb(1);
     });
   }
 
-  _updateState() {
-    const latestStockData = this.stockData;
-    this.setState({ stockData: latestStockData });
+  _updateSelectValue(value) {
+    this.setState({ value });
+  }
+  
+  _timeUp (a, b) {
+    return a.timestamp - b.timestamp
   }
 
-  _processData(stockData) {
-    if (stockData.length) {
-      this.stockTableData = stockData.map(data => {
-        let obj = {};
-        let splitedData = data.split(',');
-        obj['year'] = (new Date(parseInt(splitedData[0], 10))).getFullYear();
-        obj['open'] = parseInt(splitedData[1]);  
-        obj['high'] = parseInt(splitedData[2]);  
-        obj['low'] = parseInt(splitedData[3]);  
-        obj['close'] = parseInt(splitedData[4]);   
-        obj['volume'] = parseInt(splitedData[5]);        
-        return obj;
-      });
+  _timeDown (a, b) {
+    return b.timestamp - a.timestamp
+  }
 
-      // console.log(this.stockTableData);
-      // this.setState({ stockTableData });
+  _closeUp (a, b) {
+    return a.close - b.close
+  }
+
+  _closeDown (a, b) {
+    return b.close - a.close
+  }
+
+  _handleData(stockData, sortFunc) {
+    return new Promise((resolve, reject) => {
+      if (stockData.length) {
+        let stockTableData = stockData.map((data, i) => {
+          let obj = {};
+          let splitedData = data.split(',');
+          let d = new Date(parseInt(splitedData[0], 10));
+          obj['new'] = Boolean(i === stockData.length - 1);
+          obj['year'] = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+          obj['timestamp'] = parseInt(splitedData[0]);
+          obj['open'] = parseInt(splitedData[1]);  
+          obj['high'] = parseInt(splitedData[2]);  
+          obj['low'] = parseInt(splitedData[3]);  
+          obj['close'] = parseInt(splitedData[4]);   
+          obj['volume'] = parseInt(splitedData[5]);        
+          return obj;
+        });
+
+        if (sortFunc) {
+          stockTableData = stockTableData.sort(sortFunc);
+        }
+
+        resolve(stockTableData);
+      } else {
+        reject('error');
+      }
+    });
+  }
+
+  _processData(stockData, value) {
+    let sortFunc = null;
+    if (value === 1) {
+      sortFunc = this._timeUp;
+    } else if (value === 2) {
+      sortFunc = this._timeDown;
+    } else if (value === 3) {
+      sortFunc = this._closeUp;
+    } else if (value === 4) {
+      sortFunc = this._closeDown;
+    } else {
+      sortFunc = null;
     }
+
+    this._handleData(stockData, sortFunc)
+      .then(stockTableData => {
+        this.stockTableData = stockTableData;
+      })
+      .catch(err => {
+        console.log("Error")
+      });
   }
 }
 
