@@ -36,8 +36,6 @@ class StockTableContainer extends React.Component {
 
   componentWillMount() {
     this._connect();
-    // this._subscribe();
-    // this._receiveData();
   }
 
   componentDidUpdate() {
@@ -49,11 +47,6 @@ class StockTableContainer extends React.Component {
   render() {
     const stockTableData = this.stockTableData;
     const value = this.state.value;
-    const styleContainer = {
-      maxHeight: '400px',
-      overflow: 'hidden',
-      overflowY: 'scroll'
-    };
 
     return (
       <MaterialDiv>
@@ -66,29 +59,7 @@ class StockTableContainer extends React.Component {
         />
         {
           stockTableData.length ?
-            <div style={styleContainer}>
-              <Table >
-                <TableHeader 
-                  displaySelectAll={false}
-                >
-                  <TableRow>
-                    <TableHeaderColumn>Year</TableHeaderColumn>
-                    <TableHeaderColumn>Open</TableHeaderColumn>
-                    <TableHeaderColumn>High</TableHeaderColumn>
-                    <TableHeaderColumn>Low</TableHeaderColumn>
-                    <TableHeaderColumn>Close</TableHeaderColumn>
-                    <TableHeaderColumn>Volume</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={false}
-                >
-                  <StockMaterialTable 
-                    stockTableData={stockTableData}
-                  />
-                </TableBody>
-              </Table>
-            </div>
+            this._renderTable(stockTableData)
           : 
             null
         }
@@ -96,6 +67,52 @@ class StockTableContainer extends React.Component {
           ref="snackbar"
         />
       </MaterialDiv>
+    );
+  }
+
+  _renderTable(stockTableData) {
+    const styleContainer = {
+      maxHeight: '400px',
+      overflow: 'hidden',
+      overflowY: 'scroll'
+    };
+
+    return (
+      <div style={styleContainer}>
+        <Table >
+          <TableHeader 
+            displaySelectAll={false}
+          >
+            <TableRow>
+              <TableHeaderColumn>
+                Year
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                Open
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                High
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                Low
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                Close
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                Volume
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            displayRowCheckbox={false}
+          >
+            <StockMaterialTable 
+              stockTableData={stockTableData}
+            />
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 
@@ -139,19 +156,19 @@ class StockTableContainer extends React.Component {
   }
   
   _timeUp (a, b) {
-    return a.timestamp - b.timestamp
+    return a.timestamp - b.timestamp;
   }
 
   _timeDown (a, b) {
-    return b.timestamp - a.timestamp
+    return b.timestamp - a.timestamp;
   }
 
   _closeUp (a, b) {
-    return a.close - b.close
+    return a.close - b.close;
   }
 
   _closeDown (a, b) {
-    return b.close - a.close
+    return b.close - a.close;
   }
 
   _handleData(stockData, sortFunc) {

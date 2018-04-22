@@ -22,13 +22,18 @@ const HistoricalAreaChart = (props) => {
         width={950}
         height={350}
         data={data}
-        margin={{ top: 40, right: 20, left: 20, bottom: 30 }}>
+        margin={{
+          top: 40,
+          right: 20,
+          left: 20,
+          bottom: 30
+        }}>
         <defs>
           <linearGradient 
-            id="colorUv" 
-            x1="0" 
-            y1="0" 
-            x2="0" 
+            id="colorUv"
+            x1="0"
+            y1="0"
+            x2="0"
             y2="1"
           >
             <stop
@@ -48,7 +53,7 @@ const HistoricalAreaChart = (props) => {
         />
         <XAxis
           dataKey="year"
-          label={{ 
+          label={{
             value: 'Year',
             position: 'bottom'
           }}

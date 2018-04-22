@@ -17,12 +17,24 @@ const StockMaterialTable = (props) => {
           }}
           selectable={false}
         >      
-          <TableRowColumn>{data.year}</TableRowColumn>
-          <TableRowColumn>{data.open}</TableRowColumn>
-          <TableRowColumn>{data.high}</TableRowColumn>
-          <TableRowColumn>{data.low}</TableRowColumn>
-          <TableRowColumn>{data.close}</TableRowColumn>
-          <TableRowColumn>{data.volume}</TableRowColumn>
+          <TableRowColumn>
+            {data.year}
+          </TableRowColumn>
+          <TableRowColumn>
+            {data.open}
+          </TableRowColumn>
+          <TableRowColumn>
+            {data.high}
+          </TableRowColumn>
+          <TableRowColumn>
+            {data.low}
+          </TableRowColumn>
+          <TableRowColumn>
+            {data.close}
+          </TableRowColumn>
+          <TableRowColumn>
+            {data.volume}
+          </TableRowColumn>
         </TableRow>
       );
     })
