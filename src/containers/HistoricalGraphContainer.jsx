@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialSnackbar from './../components/MaterialSnackbar';
-import HistoricalAreaChart from './../components/HistoricalAreaChart';
+import StockAreaChart from './../components/StockAreaChart';
 import getHist from './../api';
 
 class HistoricalGraphContainer extends React.Component {
@@ -18,7 +18,7 @@ class HistoricalGraphContainer extends React.Component {
       <div>
         {
           this.state.plotData ?
-            <HistoricalAreaChart 
+            <StockAreaChart 
               data={this.state.plotData}
             />
           :

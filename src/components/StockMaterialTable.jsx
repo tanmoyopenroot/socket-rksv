@@ -18,7 +18,7 @@ const StockMaterialTable = (props) => {
           selectable={false}
         >      
           <TableRowColumn>
-            {data.year}
+            {data.date}
           </TableRowColumn>
           <TableRowColumn>
             {data.open}

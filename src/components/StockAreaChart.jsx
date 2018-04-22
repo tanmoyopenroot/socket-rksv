@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import MaterialDiv from './MaterialDiv';
 
-const HistoricalAreaChart = (props) => {
+const StockAreaChart = (props) => {
   const data = props.data;
   const styleContainer = {
     fontSize: '11px'
@@ -78,8 +78,8 @@ const HistoricalAreaChart = (props) => {
   );
 }
 
-HistoricalAreaChart.propTypes = {
+StockAreaChart.propTypes = {
   data: PropTypes.array
 }
 
-export default HistoricalAreaChart;
+export default StockAreaChart;

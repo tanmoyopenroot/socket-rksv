@@ -1,6 +1,7 @@
 import React from 'react';
 import StockOptions from './../components/StockOptions';
 import StockMaterialTable from './../components/StockMaterialTable';
+import StockAreaChart from './../components/StockAreaChart';
 import MaterialSnackbar from './../components/MaterialSnackbar';
 import MaterialDiv from './../components/MaterialDiv';
 import {
@@ -25,6 +26,7 @@ class StockTableContainer extends React.Component {
       value: 0
     };
     this.stockTableData = [];
+    this.stockChartData = [];
     this._subscribe = this._subscribe.bind(this);
     this._unsubscibe = this._unsubscibe.bind(this);
     this._updateSelectValue = this._updateSelectValue.bind(this);
@@ -46,9 +48,17 @@ class StockTableContainer extends React.Component {
 
   render() {
     const stockTableData = this.stockTableData;
+    const stockChartData = this.stockChartData;
     const value = this.state.value;
 
     return (
+      <div>
+      {
+        stockChartData.length ?
+          this._renderAreaChart(stockChartData)
+        : 
+          null
+      }
       <MaterialDiv>
         <StockOptions 
           updateSelectValue={this._updateSelectValue}
@@ -67,6 +77,15 @@ class StockTableContainer extends React.Component {
           ref="snackbar"
         />
       </MaterialDiv>
+      </div>
+    );
+  }
+
+  _renderAreaChart(stockChartData) {
+    return (
+      <StockAreaChart 
+        data={stockChartData}
+      />
     );
   }
 
@@ -171,7 +190,7 @@ class StockTableContainer extends React.Component {
     return b.close - a.close;
   }
 
-  _handleData(stockData, sortFunc) {
+  _handleData(stockData) {
     return new Promise((resolve, reject) => {
       if (stockData.length) {
         let stockTableData = stockData.map((data, i) => {
@@ -179,7 +198,8 @@ class StockTableContainer extends React.Component {
           let splitedData = data.split(',');
           let d = new Date(parseInt(splitedData[0], 10));
           obj['new'] = Boolean(i === stockData.length - 1);
-          obj['year'] = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+          obj['year'] = parseInt(d.getFullYear(), 10);
+          obj['date'] = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
           obj['timestamp'] = parseInt(splitedData[0], 10);
           obj['open'] = parseInt(splitedData[1], 10);  
           obj['high'] = parseInt(splitedData[2], 10);  
@@ -188,11 +208,6 @@ class StockTableContainer extends React.Component {
           obj['volume'] = parseInt(splitedData[5], 10);        
           return obj;
         });
-
-        if (sortFunc) {
-          stockTableData = stockTableData.sort(sortFunc);
-        }
-
         resolve(stockTableData);
       } else {
         reject('error');
@@ -214,9 +229,14 @@ class StockTableContainer extends React.Component {
       sortFunc = null;
     }
 
-    this._handleData(stockData, sortFunc)
-      .then(stockTableData => {
-        this.stockTableData = stockTableData;
+    this._handleData(stockData)
+      .then((data) => {
+        this.stockChartData = data.slice(0);
+        if (sortFunc) {
+          this.stockTableData = data.sort(sortFunc);
+        } else {
+          this.stockTableData = data;
+        }
       })
       .catch(err => {
         console.log("Error")
