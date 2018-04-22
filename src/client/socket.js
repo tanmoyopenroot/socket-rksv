@@ -11,6 +11,10 @@ function subscribe(state) {
   socket.emit('sub', state);
 }
 
+function unsubscribe(state) {
+  socket.emit('unsub', state);
+}
+
 function receiveData(onDataReceive) {
   socket.on('data', onDataReceive);
 }
@@ -18,5 +22,6 @@ function receiveData(onDataReceive) {
 export {
   connect,
   subscribe,
+  unsubscribe,
   receiveData
 };

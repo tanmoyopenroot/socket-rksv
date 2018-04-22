@@ -37,14 +37,14 @@ class HistoricalGraphContainer extends React.Component {
         this.refs.snackbar.show('Oops! An error occurred while fetching the data');
       } else {
         this.setState({ hist });
-        this.refs.snackbar.show('Data fetched!');
+        this.refs.snackbar.show('Historical data fetched');
         this._processData();
       }
     });
 
     setTimeout(() => {
       this.refs.snackbar.dismiss();
-    }, 3000);
+    }, 1000);
   }
 
   _processData() {

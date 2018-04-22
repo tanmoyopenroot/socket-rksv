@@ -1,68 +1,91 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-const StockOptions = (props) => {
-  const value = props.value;
+class StockOptions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openMenu: false
+    };
+    this._handleOpenMenu = this._handleOpenMenu.bind(this);
+    this._handleCloseMenu = this._handleCloseMenu.bind(this);
+  }
 
-  const styleContainer = {
-    textAlign: 'center',
-  };
-
-  const style = {
-    margin: 12,
-  };
-
-  return (
-    <div
-      style={styleContainer}
-    >
-      <RaisedButton
-        label="Get Historical"
-        primary={true}
-        style={style}
-      />
-      <RaisedButton
-        label="Subscribe"
-        primary={true}
-        style={style}
-      />
-      <RaisedButton
-        label="Unsubscribe"
-        primary={true}
-        style={style}
-      />
-      <SelectField
-        floatingLabelText="Sort"
-        value={value}
-        onChange={(event, index, value) => props.updateSelectValue(value)}
+  render() {
+    const value = this.props.value;
+    const styleContainer = {
+      textAlign: 'center',
+    };
+    const styleRaisedButton = {
+      margin: 12,
+    };
+    const selectFieldStyle = {
+      height: '90px',
+      width: '170px',
+      marginLeft: '12px'
+    }
+  
+    return (
+      <div
+        style={styleContainer}
       >
-        <MenuItem 
-          value={1} 
-          primaryText="Time (Up)"
+        <RaisedButton
+          label="Get Historical"
+          primary={true}
+          style={styleRaisedButton}
+          onClick={() => this.props.histHandler()}
         />
-        <MenuItem 
-          value={2}
-          primaryText="Time (Down)"
+        <RaisedButton
+          label="Subscribe"
+          primary={true}
+          style={styleRaisedButton}
+          onClick={() => this.props.subscribeHandler()}
         />
-        <MenuItem 
-          value={3} 
-          primaryText="Close (Up)"
+        <RaisedButton
+          label="Unsubscribe"
+          primary={true}
+          style={styleRaisedButton}
+          onClick={() => this.props.unsubscribeHandler()}
         />
-        <MenuItem 
-          value={4} 
-          primaryText="Close (Down)"
-        />
-      </SelectField>
-    </div>
-  );
-}
+  
+        <SelectField
+          floatingLabelText="Sort"
+          hintText="Sort"
+          value={value}
+          onChange={(event, index, value) => this.props.updateSelectValue(value)}
+          style={selectFieldStyle}
+        >
+          <MenuItem 
+            value={1} 
+            primaryText="Time (Up)"
+          />
+          <MenuItem 
+            value={2}
+            primaryText="Time (Down)"
+          />
+          <MenuItem 
+            value={3} 
+            primaryText="Close (Up)"
+          />
+          <MenuItem 
+            value={4} 
+            primaryText="Close (Down)"
+          />
+        </SelectField>
+      </div>
+    );
+  }
 
-StockOptions.prototype = {
-  updateSelectValue: PropTypes.func,
-  value: PropTypes.number
+  _handleCloseMenu(value) {
+    this.setState({ openMenu: false });
+    this.props.updateSelectValue(value)
+  }
+
+  _handleOpenMenu() {
+    this.setState({ openMenu: true });
+  }
 }
 
 export default StockOptions;

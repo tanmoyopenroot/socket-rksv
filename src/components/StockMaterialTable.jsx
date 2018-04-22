@@ -14,7 +14,9 @@ const StockMaterialTable = (props) => {
           key={index}
           style={{
             background: data.new ? '#00bdd64a' : 'inherit'
-          }}>      
+          }}
+          selectable={false}
+        >      
           <TableRowColumn>{data.year}</TableRowColumn>
           <TableRowColumn>{data.open}</TableRowColumn>
           <TableRowColumn>{data.high}</TableRowColumn>

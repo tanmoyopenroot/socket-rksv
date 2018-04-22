@@ -13,6 +13,7 @@ import {
 import {
   connect,
   subscribe,
+  unsubscribe,
   receiveData
  } from './../client/socket';
 
@@ -24,6 +25,8 @@ class StockTableContainer extends React.Component {
       value: 0
     };
     this.stockTableData = [];
+    this._subscribe = this._subscribe.bind(this);
+    this._unsubscibe = this._unsubscibe.bind(this);
     this._updateSelectValue = this._updateSelectValue.bind(this);
     this._timeUp = this._timeUp.bind(this);
     this._timeDown = this._timeDown.bind(this);
@@ -33,8 +36,8 @@ class StockTableContainer extends React.Component {
 
   componentWillMount() {
     this._connect();
-    this._subscribe();
-    this._receiveData();
+    // this._subscribe();
+    // this._receiveData();
   }
 
   componentDidUpdate() {
@@ -47,8 +50,9 @@ class StockTableContainer extends React.Component {
     const stockTableData = this.stockTableData;
     const value = this.state.value;
     const styleContainer = {
-      height: '400px',
-      overflowY: 'scroll',
+      maxHeight: '400px',
+      overflow: 'hidden',
+      overflowY: 'scroll'
     };
 
     return (
@@ -56,32 +60,38 @@ class StockTableContainer extends React.Component {
         <StockOptions 
           updateSelectValue={this._updateSelectValue}
           value={value}
+          subscribeHandler={this._subscribe}
+          unsubscribeHandler={this._unsubscibe}
+          histHandler={this.props.histHandler}
         />
-        <div style={styleContainer}>
-          <Table >
-            <TableHeader 
-              displaySelectAll={false}>
-              <TableRow>
-                <TableHeaderColumn>Year</TableHeaderColumn>
-                <TableHeaderColumn>Open</TableHeaderColumn>
-                <TableHeaderColumn>High</TableHeaderColumn>
-                <TableHeaderColumn>Low</TableHeaderColumn>
-                <TableHeaderColumn>Close</TableHeaderColumn>
-                <TableHeaderColumn>Volume</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-            {
-              stockTableData ?
-                <StockMaterialTable 
-                  stockTableData={stockTableData}
-                />
-              : 
-              null
-            }
-            </TableBody>
-          </Table>
-        </div>
+        {
+          stockTableData.length ?
+            <div style={styleContainer}>
+              <Table >
+                <TableHeader 
+                  displaySelectAll={false}
+                >
+                  <TableRow>
+                    <TableHeaderColumn>Year</TableHeaderColumn>
+                    <TableHeaderColumn>Open</TableHeaderColumn>
+                    <TableHeaderColumn>High</TableHeaderColumn>
+                    <TableHeaderColumn>Low</TableHeaderColumn>
+                    <TableHeaderColumn>Close</TableHeaderColumn>
+                    <TableHeaderColumn>Volume</TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  displayRowCheckbox={false}
+                >
+                  <StockMaterialTable 
+                    stockTableData={stockTableData}
+                  />
+                </TableBody>
+              </Table>
+            </div>
+          : 
+            null
+        }
         <MaterialSnackbar
           ref="snackbar"
         />
@@ -100,6 +110,19 @@ class StockTableContainer extends React.Component {
 
   _subscribe() {
     subscribe({ state: true });
+    this._receiveData();
+    this.refs.snackbar.show('Subscribed');
+    setTimeout(() => {
+      this.refs.snackbar.dismiss();
+    }, 1000);
+  }
+
+  _unsubscibe() {
+    unsubscribe({ state: false });
+    this.refs.snackbar.show('Unsubscribed');
+    setTimeout(() => {
+      this.refs.snackbar.dismiss();
+    }, 1000);
   }
 
   _receiveData() {

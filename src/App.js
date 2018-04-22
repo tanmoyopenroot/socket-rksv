@@ -8,8 +8,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stockData: [],
+      showHist: false
     };
+    this._histHandler = this._histHandler.bind(this);
   }
 
   render() {
@@ -19,10 +20,21 @@ class App extends Component {
           title="Real Time OHLC Feed Demo"
           showMenuIconButton={false}
         />
-        <HistoricalGraphContainer />
-        <StockTableContainer />
+        {
+          this.state.showHist ?
+            <HistoricalGraphContainer />
+          :
+            null
+        }
+        <StockTableContainer 
+          histHandler={this._histHandler}
+        />
       </div>
     );
+  }
+
+  _histHandler() {
+    this.setState({ showHist: true });
   }
 
 }
