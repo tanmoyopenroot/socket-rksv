@@ -163,12 +163,12 @@ class StockTableContainer extends React.Component {
           let d = new Date(parseInt(splitedData[0], 10));
           obj['new'] = Boolean(i === stockData.length - 1);
           obj['year'] = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
-          obj['timestamp'] = parseInt(splitedData[0]);
-          obj['open'] = parseInt(splitedData[1]);  
-          obj['high'] = parseInt(splitedData[2]);  
-          obj['low'] = parseInt(splitedData[3]);  
-          obj['close'] = parseInt(splitedData[4]);   
-          obj['volume'] = parseInt(splitedData[5]);        
+          obj['timestamp'] = parseInt(splitedData[0], 10);
+          obj['open'] = parseInt(splitedData[1], 10);  
+          obj['high'] = parseInt(splitedData[2], 10);  
+          obj['low'] = parseInt(splitedData[3], 10);  
+          obj['close'] = parseInt(splitedData[4], 10);   
+          obj['volume'] = parseInt(splitedData[5], 10);        
           return obj;
         });
 

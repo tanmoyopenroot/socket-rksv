@@ -55,7 +55,7 @@ class HistoricalGraphContainer extends React.Component {
         let splitedData = data.split(',');
         obj['year'] = (new Date(parseInt(splitedData[0], 10))).getFullYear();
         obj['timestamp'] = parseInt(splitedData[0], 10);
-        obj['close'] = parseInt(splitedData[4]);        
+        obj['close'] = parseInt(splitedData[4], 10);        
         return obj;
       }).sort(function (a, b) {
         return a.year - b.year;
